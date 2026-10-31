@@ -246,6 +246,70 @@ void deleteBook(void) {
 
     puts("Data Successfully delete..");
 }
+
+// menampilkan data riwayat transaksi penjualan
+void viewHistory(void) {
+    // validasi jika riwayat kosong
+    if (historyCount == 0) {
+        puts("Tidak ada data histori transaksi.");
+        return;
+    }
+
+    printf("\n=== Daftar Histori Transaksi ===\n");
+    printf("%-5s %-10s %-15s %s\n", "No", "Kode Buku", "Jumlah Terjual", "Total Harga");
+
+    // looping tampilkan isi riwayat
+    for (int i = 0; i < historyCount; i++) {
+        printf("%-5d %-10s %-15d %.2f\n",
+               i + 1, historyRecords[i].code,
+               historyRecords[i].quantity, historyRecords[i].total);
+    }
+}
+
+// menghapus data riwayat transaksi tertentu
+void deleteHistory(void) {
+    // validasi jika riwayat kosong
+    if (historyCount == 0) {
+        puts("Tidak ada data histori transaksi untuk dihapus.");
+        return;
+    }
+
+    // tampilkan daftar histori dulu
+    viewHistory();
+
+    int index;
+    printf("\nMasukkan index history yang ingin dihapus: ");
+
+    char line[LINE_LENGTH];
+    char *end;
+
+    // baca input user
+    if (readLine(stdin, line, sizeof(line)) != 1) {
+        puts("Input tidak valid.");
+        return;
+    }
+
+    long number = strtol(line, &end, 10);
+
+    // validasi batas nomor index
+    if (end == line || hasContent(end) ||
+        number < 1 || number > historyCount) {
+        puts("Index tidak valid.");
+        return;
+    }
+
+    index = (int)number;
+
+    // geser data ke kiri untuk menghapus
+    for (int i = index - 1; i < historyCount - 1; i++) {
+        historyRecords[i] = historyRecords[i + 1];
+    }
+
+    // kurangi jumlah data riwayat
+    historyCount--;
+
+    puts("Data Successfully delete..");
+}
 // Mengurutkan buku berdasarkan nama secara ascending menggunakan Bubble Sort.
 
 // Mengurutkan buku berdasarkan nama secara ascending menggunakan Bubble Sort.
@@ -465,6 +529,8 @@ int main(void) {
         char choice[16];
 
         puts("1. Input Data Buku Baru");
+        puts("3. View Buku");
+        puts("4. Delete History");
         puts("5. Delete Buku");
         puts("8. Sort Buku");
         puts("6. Simpan dan Keluar");
@@ -480,6 +546,10 @@ int main(void) {
 
         if (status == 1 && strcmp(choice, "1") == 0) {
             inputBook();
+        } else if (status == 1 && strcmp(choice, "3") == 0) {
+            viewBooks();
+        } else if (status == 1 && strcmp(choice, "4") == 0) {
+            deleteHistory();
         } else if (status == 1 && strcmp(choice, "5") == 0) {
             deleteBook();
         } else if (status == 1 && strcmp(choice, "8") == 0) {
@@ -491,7 +561,7 @@ int main(void) {
             }
             puts("Data gagal disimpan. Periksa file lalu pilih menu 6 lagi.");
         } else {
-           puts("Pilihan tidak valid. Pilih menu 1, 5, 8, atau 6.");
+           puts("Pilihan tidak valid. Pilih menu 1, 3, 4, 5, 8, atau 6.");
         }
     }
 }
