@@ -188,6 +188,97 @@ static int readText(const char *prompt, char *text, int capacity) {
     }
 }
 
+// Menampilkan seluruh data buku beserta nomor index.
+void viewBooks(void) {
+    if (bookCount == 0) {
+        puts("Tidak ada data buku.");
+        return;
+    }
+
+    printf("\n=== Daftar Buku ===\n");
+    printf("%-5s %-10s %-25s %-20s %s\n",
+           "No", "Kode", "Nama Buku", "Jenis Buku", "Harga");
+
+    for (int i = 0; i < bookCount; i++) {
+        printf("%-5d %-10s %-25s %-20s %.2f\n",
+               i + 1, books[i].code, books[i].name,
+               books[i].category, books[i].price);
+    }
+}
+
+// Menghapus data buku berdasarkan nomor index.
+void deleteBook(void) {
+    if (bookCount == 0) {
+        puts("Tidak ada data buku untuk dihapus.");
+        return;
+    }
+
+    viewBooks();
+
+    int index;
+    printf("\nMasukkan index buku yang ingin dihapus: ");
+
+    char line[LINE_LENGTH];
+    char *end;
+
+    if (readLine(stdin, line, sizeof(line)) != 1) {
+        puts("Input tidak valid.");
+        return;
+    }
+
+    long number = strtol(line, &end, 10);
+
+    if (end == line || hasContent(end) ||
+        number < 1 || number > bookCount) {
+        puts("Index tidak valid.");
+        return;
+    }
+
+    index = (int)number;
+
+    for (int i = index - 1; i < bookCount - 1; i++) {
+        books[i] = books[i + 1];
+    }
+
+    bookCount--;
+
+    puts("Data Successfully delete..");
+}
+// Mengurutkan buku berdasarkan nama secara ascending menggunakan Bubble Sort.
+void bubbleSortByName(void) {
+    Book sortedBooks[MAX_BOOKS];
+    Book temp;
+
+    // Menyalin data buku agar urutan data asli tidak berubah.
+    for (int i = 0; i < bookCount; i++) {
+        sortedBooks[i] = books[i];
+    }
+
+    // Proses pengurutan menggunakan Bubble Sort.
+    for (int i = 0; i < bookCount - 1; i++) {
+        for (int j = 0; j < bookCount - i - 1; j++) {
+            if (strcmp(sortedBooks[j].name, sortedBooks[j + 1].name) > 0) {
+                temp = sortedBooks[j];
+                sortedBooks[j] = sortedBooks[j + 1];
+                sortedBooks[j + 1] = temp;
+            }
+        }
+    }
+
+    // Menampilkan hasil pengurutan.
+    printf("\n=== Buku Berdasarkan Nama (A-Z) ===\n");
+    printf("%-5s %-10s %-25s %-20s %s\n",
+           "No", "Kode", "Nama Buku", "Jenis Buku", "Harga");
+
+    for (int i = 0; i < bookCount; i++) {
+        printf("%-5d %-10s %-25s %-20s %.2f\n",
+               i + 1,
+               sortedBooks[i].code,
+               sortedBooks[i].name,
+               sortedBooks[i].category,
+               sortedBooks[i].price);
+    }
+}
 void inputBook(void) {
     if (bookCount == MAX_BOOKS) {
         puts("Kapasitas data buku sudah penuh.");
