@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+void sortBooks(void);
+
 #define MAX_BOOKS 1000
 #define MAX_HISTORY 1000
 #define LINE_LENGTH 256
@@ -245,9 +247,16 @@ void deleteBook(void) {
     puts("Data Successfully delete..");
 }
 // Mengurutkan buku berdasarkan nama secara ascending menggunakan Bubble Sort.
+
+// Mengurutkan buku berdasarkan nama secara ascending menggunakan Bubble Sort.
 void bubbleSortByName(void) {
     Book sortedBooks[MAX_BOOKS];
     Book temp;
+
+    if (bookCount == 0) {
+        puts("Tidak ada data buku untuk diurutkan.");
+        return;
+    }
 
     // Menyalin data buku agar urutan data asli tidak berubah.
     for (int i = 0; i < bookCount; i++) {
@@ -265,20 +274,91 @@ void bubbleSortByName(void) {
         }
     }
 
-    // Menampilkan hasil pengurutan.
     printf("\n=== Buku Berdasarkan Nama (A-Z) ===\n");
     printf("%-5s %-10s %-25s %-20s %s\n",
            "No", "Kode", "Nama Buku", "Jenis Buku", "Harga");
 
     for (int i = 0; i < bookCount; i++) {
         printf("%-5d %-10s %-25s %-20s %.2f\n",
-               i + 1,
-               sortedBooks[i].code,
-               sortedBooks[i].name,
-               sortedBooks[i].category,
-               sortedBooks[i].price);
+               i + 1, sortedBooks[i].code, sortedBooks[i].name,
+               sortedBooks[i].category, sortedBooks[i].price);
     }
 }
+
+// Mengurutkan buku berdasarkan harga secara descending menggunakan Selection Sort.
+void selectionSortByPrice(void) {
+    Book sortedBooks[MAX_BOOKS];
+    Book temp;
+    int maxIndex;
+
+    if (bookCount == 0) {
+        puts("Tidak ada data buku untuk diurutkan.");
+        return;
+    }
+
+    // Menyalin data buku agar urutan data asli tidak berubah.
+    for (int i = 0; i < bookCount; i++) {
+        sortedBooks[i] = books[i];
+    }
+
+    // Proses pengurutan menggunakan Selection Sort.
+    for (int i = 0; i < bookCount - 1; i++) {
+        maxIndex = i;
+
+        for (int j = i + 1; j < bookCount; j++) {
+            if (sortedBooks[j].price > sortedBooks[maxIndex].price) {
+                maxIndex = j;
+            }
+        }
+
+        if (maxIndex != i) {
+            temp = sortedBooks[i];
+            sortedBooks[i] = sortedBooks[maxIndex];
+            sortedBooks[maxIndex] = temp;
+        }
+    }
+
+    printf("\n=== Buku Berdasarkan Harga (Terbesar - Terkecil) ===\n");
+    printf("%-5s %-10s %-25s %-20s %s\n",
+           "No", "Kode", "Nama Buku", "Jenis Buku", "Harga");
+
+    for (int i = 0; i < bookCount; i++) {
+        printf("%-5d %-10s %-25s %-20s %.2f\n",
+               i + 1, sortedBooks[i].code, sortedBooks[i].name,
+               sortedBooks[i].category, sortedBooks[i].price);
+    }
+}
+
+
+void sortBooks(void) {
+    char choice[16];
+
+    for (;;) {
+        puts("\n=== Menu Sorting Buku ===");
+        puts("1. Urutkan Nama Buku (A-Z)");
+        puts("2. Urutkan Harga (Terbesar - Terkecil)");
+        puts("3. Kembali");
+        printf("Pilihan: ");
+        fflush(stdout);
+
+        int status = readLine(stdin, choice, sizeof(choice));
+
+        if (status == 0) {
+            return;
+        }
+
+        if (status == 1 && strcmp(choice, "1") == 0) {
+            bubbleSortByName();
+        } else if (status == 1 && strcmp(choice, "2") == 0) {
+            selectionSortByPrice();
+        } else if (status == 1 && strcmp(choice, "3") == 0) {
+            return;
+        } else {
+            puts("Pilihan tidak valid.");
+        }
+    }
+}
+
 void inputBook(void) {
     if (bookCount == MAX_BOOKS) {
         puts("Kapasitas data buku sudah penuh.");
@@ -383,17 +463,27 @@ int main(void) {
 
     for (;;) {
         char choice[16];
+
         puts("1. Input Data Buku Baru");
+        puts("5. Delete Buku");
+        puts("8. Sort Buku");
         puts("6. Simpan dan Keluar");
+
         printf("Pilihan: ");
         fflush(stdout);
+
         int status = readLine(stdin, choice, sizeof(choice));
         if (status == 0) {
             puts("\nInput berakhir. Menyimpan data sebelum keluar.");
             return saveData() ? EXIT_SUCCESS : EXIT_FAILURE;
-        }
+              }
+
         if (status == 1 && strcmp(choice, "1") == 0) {
             inputBook();
+        } else if (status == 1 && strcmp(choice, "5") == 0) {
+            deleteBook();
+        } else if (status == 1 && strcmp(choice, "8") == 0) {
+            sortBooks();
         } else if (status == 1 && strcmp(choice, "6") == 0) {
             if (saveData()) {
                 puts("Data berhasil disimpan. Terima kasih!");
@@ -401,7 +491,7 @@ int main(void) {
             }
             puts("Data gagal disimpan. Periksa file lalu pilih menu 6 lagi.");
         } else {
-            puts("Pilihan tidak valid. Pilih menu 1 atau 6.");
+           puts("Pilihan tidak valid. Pilih menu 1, 5, 8, atau 6.");
         }
     }
 }
