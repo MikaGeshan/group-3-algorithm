@@ -225,14 +225,26 @@ static int readText(const char *prompt, char *text, int capacity)
 }
 
 // Menu 2 : View History Transaksi Penjualan
+<<<<<<< HEAD
 void viewHistoryPenjualan(void) {
     if (historyCount == 0) {
+=======
+void viewHistoryPenjualan(void)
+{
+    if (historyCount == 0)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         puts("Tidak ada histori transaksi.");
         return;
     }
     printf("\n=== Histori Transaski Penjualan ===\n");
     printf("%-5s %-10s %-18s %s\n", "No", "Kode Buku", "Jumlah Terjual", "Total Harga");
+<<<<<<< HEAD
     for (int i = 0; i < historyCount; i++) {
+=======
+    for (int i = 0; i < historyCount; i++)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         printf("%-5d %-10s %-18d %.2f\n",
                i + 1,
                historyRecords[i].code,
@@ -307,9 +319,17 @@ void deleteBook(void)
 }
 
 // menampilkan data riwayat transaksi penjualan
+<<<<<<< HEAD
 void viewHistory(void) {
     // validasi jika riwayat kosong
     if (historyCount == 0) {
+=======
+void viewHistory(void)
+{
+    // validasi jika riwayat kosong
+    if (historyCount == 0)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         puts("Tidak ada data histori transaksi.");
         return;
     }
@@ -318,7 +338,12 @@ void viewHistory(void) {
     printf("%-5s %-10s %-15s %s\n", "No", "Kode Buku", "Jumlah Terjual", "Total Harga");
 
     // looping tampilkan isi riwayat
+<<<<<<< HEAD
     for (int i = 0; i < historyCount; i++) {
+=======
+    for (int i = 0; i < historyCount; i++)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         printf("%-5d %-10s %-15d %.2f\n",
                i + 1, historyRecords[i].code,
                historyRecords[i].quantity, historyRecords[i].total);
@@ -326,9 +351,17 @@ void viewHistory(void) {
 }
 
 // menghapus data riwayat transaksi tertentu
+<<<<<<< HEAD
 void deleteHistory(void) {
     // validasi jika riwayat kosong
     if (historyCount == 0) {
+=======
+void deleteHistory(void)
+{
+    // validasi jika riwayat kosong
+    if (historyCount == 0)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         puts("Tidak ada data histori transaksi untuk dihapus.");
         return;
     }
@@ -343,7 +376,12 @@ void deleteHistory(void) {
     char *end;
 
     // baca input user
+<<<<<<< HEAD
     if (readLine(stdin, line, sizeof(line)) != 1) {
+=======
+    if (readLine(stdin, line, sizeof(line)) != 1)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         puts("Input tidak valid.");
         return;
     }
@@ -352,7 +390,12 @@ void deleteHistory(void) {
 
     // validasi batas nomor index
     if (end == line || hasContent(end) ||
+<<<<<<< HEAD
         number < 1 || number > historyCount) {
+=======
+        number < 1 || number > historyCount)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         puts("Index tidak valid.");
         return;
     }
@@ -360,7 +403,12 @@ void deleteHistory(void) {
     index = (int)number;
 
     // geser data ke kiri untuk menghapus
+<<<<<<< HEAD
     for (int i = index - 1; i < historyCount - 1; i++) {
+=======
+    for (int i = index - 1; i < historyCount - 1; i++)
+    {
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         historyRecords[i] = historyRecords[i + 1];
     }
 
@@ -621,12 +669,28 @@ void inputTransaction(void)
         }
         puts("Jumlah terjual harus berupa angka bulat positif.");
     }
+
     double total = quantity * books[targetIdx].price;
+    if (!isfinite(total) || total > 1e308)
+    {
+        puts("Total harga melebihi batas maksimal yang diizinkan.");
+        return; 
+    }
+
     History newHistory;
     strcpy(newHistory.code, books[targetIdx].code);
     newHistory.quantity = quantity;
     newHistory.total = total;
+
     historyRecords[historyCount++] = newHistory;
+
+    FILE *historyFile = fopen(HISTORY_FILE, "a");
+    if (historyFile != NULL)
+    {
+        fprintf(historyFile, "%s|%d|%.17g\n", newHistory.code, newHistory.quantity, newHistory.total);
+        fclose(historyFile);
+    }
+
     printf("Transaksi berhasil dicatat.\n");
     printf("Total Harga: %.2f\n", total);
 }
@@ -729,6 +793,18 @@ int main(void)
         } else if (status == 1 && strcmp(choice, "4") == 0) {
             deleteHistory();
         }
+        else if (status == 1 && strcmp(choice, "2") == 0)
+        {
+            viewHistoryPenjualan();
+        }
+        else if (status == 1 && strcmp(choice, "3") == 0)
+        {
+            viewBooks();
+        }
+        else if (status == 1 && strcmp(choice, "4") == 0)
+        {
+            deleteHistory();
+        }
         else if (status == 1 && strcmp(choice, "5") == 0)
         {
             deleteBook();
@@ -749,8 +825,15 @@ int main(void)
                 return EXIT_SUCCESS;
             }
             puts("Data gagal disimpan. Periksa file lalu pilih menu 6 lagi.");
+<<<<<<< HEAD
         } else {
            puts("Pilihan tidak valid. Pilih menu 1, 2, 3, 4, 5, 7, 8, atau 6.");
+=======
+        }
+        else
+        {
+            puts("Pilihan tidak valid. Pilih menu 1, 2, 3, 4, 5, 7, 8, atau 6.");
+>>>>>>> 1f2e902 (update input transaksi penjualan)
         }
     }
 }
