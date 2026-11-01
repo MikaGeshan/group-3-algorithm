@@ -224,6 +224,23 @@ static int readText(const char *prompt, char *text, int capacity)
     }
 }
 
+// Menu 2 : View History Transaksi Penjualan
+void viewHistoryPenjualan(void) {
+    if (historyCount == 0) {
+        puts("Tidak ada histori transaksi.");
+        return;
+    }
+    printf("\n=== Histori Transaski Penjualan ===\n");
+    printf("%-5s %-10s %-18s %s\n", "No", "Kode Buku", "Jumlah Terjual", "Total Harga");
+    for (int i = 0; i < historyCount; i++) {
+        printf("%-5d %-10s %-18d %.2f\n",
+               i + 1,
+               historyRecords[i].code,
+               historyRecords[i].quantity,
+               historyRecords[i].total);
+    }
+}
+
 // Menampilkan seluruh data buku beserta nomor index.
 void viewBooks(void)
 {
@@ -684,6 +701,7 @@ int main(void)
         char choice[16];
 
         puts("1. Input Data Buku Baru");
+        puts("2. View History Transaksi Penjualan");
         puts("3. View Buku");
         puts("4. Delete History");
         puts("5. Delete Buku");
@@ -704,7 +722,9 @@ int main(void)
         if (status == 1 && strcmp(choice, "1") == 0)
         {
             inputBook();
-        } else if (status == 1 && strcmp(choice, "3") == 0) {
+        } else if (status == 1 && strcmp(choice, "2") == 0) {
+            viewHistoryPenjualan();
+        }else if (status == 1 && strcmp(choice, "3") == 0) {
             viewBooks();
         } else if (status == 1 && strcmp(choice, "4") == 0) {
             deleteHistory();
@@ -730,7 +750,7 @@ int main(void)
             }
             puts("Data gagal disimpan. Periksa file lalu pilih menu 6 lagi.");
         } else {
-           puts("Pilihan tidak valid. Pilih menu 1, 3, 4, 5, 7, 8, atau 6.");
+           puts("Pilihan tidak valid. Pilih menu 1, 2, 3, 4, 5, 7, 8, atau 6.");
         }
     }
 }
